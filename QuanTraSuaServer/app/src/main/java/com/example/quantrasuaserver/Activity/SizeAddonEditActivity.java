@@ -64,10 +64,14 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     RecyclerView recycler_addon_size;
 
     //Variable
+    // Adapter Size + Addon
     MySizeAdapter adapter;
     MyAddonAdapter addonAdapter;
+    // Default postion
     private int drinksEditPosition = -1;
+    // 
     private boolean needSave = false;
+    // check addon or size 
     private boolean isAddon = false;
 
 
@@ -77,6 +81,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     void onCreateNew() {
         if (!isAddon) {
             if (adapter != null) {
+                // Create new size (only add to adapter not save data)
                 SizeModel sizeModel = new SizeModel();
                 sizeModel.setName(Objects.requireNonNull(edt_name.getText()).toString());
                 sizeModel.setPrice(Long.parseLong(Objects.requireNonNull(edt_price.getText()).toString()));
@@ -84,6 +89,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
             }
         } else { //addon
             if (addonAdapter != null) {
+                // Create new addon
                 AddonModel addonModel = new AddonModel();
                 addonModel.setName(Objects.requireNonNull(edt_name.getText()).toString());
                 addonModel.setPrice(Long.parseLong(Objects.requireNonNull(edt_price.getText()).toString()));
@@ -97,6 +103,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     void onEdit() {
         if (!isAddon) {
             if (adapter != null) {
+                // Update size
                 SizeModel sizeModel = new SizeModel();
                 sizeModel.setName(Objects.requireNonNull(edt_name.getText()).toString());
                 sizeModel.setPrice(Long.parseLong(Objects.requireNonNull(edt_price.getText()).toString()));
@@ -104,6 +111,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
             }
         } else {
             if (addonAdapter != null) {
+                // Update addon (only add to adapter not save data)
                 AddonModel addonModel = new AddonModel();
                 addonModel.setName(Objects.requireNonNull(edt_name.getText()).toString());
                 addonModel.setPrice(Long.parseLong(Objects.requireNonNull(edt_price.getText()).toString()));
@@ -124,9 +132,11 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                // if user click button save
                 saveData();
                 break;
             case android.R.id.home:
+                // Check if data change but not save notify with user
                 if (needSave) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Thông báo")
@@ -152,18 +162,20 @@ public class SizeAddonEditActivity extends AppCompatActivity {
     private void saveData() {
         if (drinksEditPosition != -1) {
             Common.categorySelected.getDrinks().set(drinksEditPosition, Common.selectDrinks); // Save drinks to category
-
+            
+            // Get drinks current choose
             Map<String, Object> updateData = new HashMap<>();
             updateData.put("drinks", Common.categorySelected.getDrinks());
 
             FirebaseDatabase.getInstance()
-                    .getReference(Common.CATEGORY_REF)
+                    .getReference(Common.CATEGORY_REF) 
                     .child(Common.categorySelected.getMenu_id())
                     .updateChildren(updateData)
                     .addOnFailureListener(e -> Toast.makeText(SizeAddonEditActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show())
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                            // Upadte status needSave and setText
                             needSave = false;
                             edt_price.setText("0");
                             edt_name.setText("");
@@ -192,6 +204,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Setup layout
         recycler_addon_size.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler_addon_size.setLayoutManager(layoutManager);
@@ -273,7 +286,7 @@ public class SizeAddonEditActivity extends AppCompatActivity {
             btn_edit.setEnabled(false);
         }
     }
-
+    // Select Addon
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onAddonSelectModel(SelectAddonModel event) {
         if (event.getAddonModel() != null) {
