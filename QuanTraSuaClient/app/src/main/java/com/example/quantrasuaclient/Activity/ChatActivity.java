@@ -25,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+// Follow https://youtu.be/7_Cc36c7EW0
 public class ChatActivity extends AppCompatActivity {
     RecyclerView chatsRV;
     EditText editMsg;
