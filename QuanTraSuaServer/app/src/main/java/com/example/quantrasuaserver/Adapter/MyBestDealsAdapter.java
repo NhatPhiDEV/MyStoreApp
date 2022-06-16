@@ -41,6 +41,7 @@ public class MyBestDealsAdapter extends RecyclerView.Adapter<MyBestDealsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        // Load image         
         Glide.with(context).load(bestDealsModelList.get(position).getImage()).into(holder.category_image);
         holder.category_name.setText(new StringBuffer(bestDealsModelList.get(position).getName()));
         //Event click
