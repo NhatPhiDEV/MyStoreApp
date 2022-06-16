@@ -34,6 +34,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final int APP_REQUEST_CODE = 7171;
+    // Authentication with firebase    
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener listener;
     private DatabaseReference serverRef;
@@ -60,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        // login methods (phone + email)          
         providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build(), new AuthUI.IdpConfig.EmailBuilder().build());
+        // setup firevase
         serverRef = FirebaseDatabase.getInstance().getReference(Common.SEVER_REF);
         firebaseAuth = FirebaseAuth.getInstance();
         listener = firebaseAuthLocal -> {
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
+    // check User isactive
     private void checkServerUserFromFirebase(FirebaseUser user) {
         CustomDialog.show(this);
         serverRef.child(user.getUid())
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    // register
     private void showRegisterDialog(FirebaseUser user) {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
-
+    
     private void goToHomeActivity(ServerUserModel serverUserModel) {
         CustomDialog.dismiss();
         Common.currentServerUser = serverUserModel;
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
+   
     private void phoneLogin() {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
