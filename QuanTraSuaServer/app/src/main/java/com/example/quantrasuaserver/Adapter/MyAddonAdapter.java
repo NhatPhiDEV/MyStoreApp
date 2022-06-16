@@ -26,28 +26,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+// RecyclerView load partial data 
 public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHolder> {
-
+    
+    // Variables (accept access Fragments, Activity )   
     Context context;
+    // List Addon    
     List<AddonModel> addonModelList;
+    // Update Addon
     UpdateAddonModel updateAddonModel;
+    // Postion edit
     int editPos;
 
+    // Contructor adapter (param context, list)    
     public MyAddonAdapter(Context context, List<AddonModel> addonModelList) {
         this.context = context;
         this.addonModelList = addonModelList;
+        // Default postion        
         editPos = -1;
         updateAddonModel = new UpdateAddonModel();
     }
 
+    // Override methods RecyclerView     
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_size_addon_display, parent, false));
     }
-
+    
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        // set Data display         
         holder.txt_name.setText(addonModelList.get(position).getName());
         holder.txt_price.setText(Common.formatPrice(addonModelList.get(position).getPrice()));
 
@@ -58,25 +67,27 @@ public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHo
             updateAddonModel.setAddonModel(addonModelList); //Set for event
             EventBus.getDefault().postSticky(updateAddonModel); //Send event
         });
-
+        // Set event choose addon           
         holder.setListener((view, pos) -> {
             editPos = position;
+            // Register eventbus             
             EventBus.getDefault().postSticky(new SelectAddonModel(addonModelList.get(pos)));
         });
     }
-
+       
     @Override
     public int getItemCount() {
         return addonModelList.size();
     }
-
+    
+    // Add new Addon     
     public void addNewAddon(AddonModel addonModel) {
         addonModelList.add(addonModel);
         notifyItemInserted(addonModelList.size() - 1);
         updateAddonModel.setAddonModel(addonModelList);
         EventBus.getDefault().postSticky(updateAddonModel);
     }
-
+    // Update Addon
     public void editAddon(AddonModel addonModel) {
         if (editPos != -1) {
             addonModelList.set(editPos, addonModel);
@@ -88,6 +99,7 @@ public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHo
         }
     }
 
+    // Manipulation with Recyclerview   
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         @SuppressLint("NonConstantResourceId")
         @BindView(R.id.txt_name)
@@ -102,11 +114,10 @@ public class MyAddonAdapter extends RecyclerView.Adapter<MyAddonAdapter.MyViewHo
         Unbinder unbinder;
 
         IRecyclerClickListener listener;
-
+               
         public void setListener(IRecyclerClickListener listener) {
             this.listener = listener;
-        }
-
+        
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             unbinder = ButterKnife.bind(this, itemView);
