@@ -57,18 +57,21 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    // using update avatar
     private static final int PICK_IMAGE_REQUEST = 7171;
+    //setupNavigaton
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
     private NavController navController;
+    // default click
     private int menuClick = -1;
-
     private ImageView img_upload;
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private IFCMService ifcmService;
     private Uri imgUri = null;
-
+    // container data
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    // Service  Firebase Cloud Messaging
+    private IFCMService ifcmService;
+    // Storge firebase
     private StorageReference storageReference;
 
     @Override
@@ -103,7 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
-        //Setup default profile show in Navigation
+        //Setup default profile display in Navigation
         View headerView = navigationView.getHeaderView(0);
         TextView txt_user = headerView.findViewById(R.id.txt_user);
         TextView txt_phone = headerView.findViewById(R.id.txt_phone);
@@ -113,7 +116,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Check new message form client
         checkIsOpenFromActivity();
     }
-    //Check
+    //Check if new order accept redirect to order view 
     private void checkIsOpenFromActivity() {
         boolean isOpenFromNewOrder = getIntent().getBooleanExtra(Common.IS_OPEN_ACTIVITY_NEW_ORDER, false);
         if (isOpenFromNewOrder) {
@@ -147,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
-
+    
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
@@ -170,6 +173,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //Event bus
+    // Event category click
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onCategoryClick(CategoryClick event) {
         if (event.isSuccess()) {
@@ -205,7 +209,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         menuClick = -1;
     }
 
-
+    // Select item in navigation      
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -359,7 +363,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(this, "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 }));
     }
-    //Send
+    //Send message
     private void sendNews(String title, String content) {
         Map<String, String> notificationData = new HashMap<>();
         notificationData.put(Common.NOTIFY_TITLE, title);
@@ -406,7 +410,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    //Camera
+    // upload image
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
